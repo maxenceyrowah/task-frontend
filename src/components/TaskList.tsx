@@ -13,8 +13,21 @@ const TaskList = () => {
   }, []);
 
   const fetchTasks = async () => {
-    const response = await getTasks();
-    setTasks(response.data);
+    try {
+      const response = await getTasks();
+      if (Array.isArray(response.data)) {
+        setTasks(response.data);
+      } else {
+        console.error(
+          "La réponse de l'API n'est pas un tableau:",
+          response.data
+        );
+        setTasks([]);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des tâches:", error);
+      setTasks([]);
+    }
   };
 
   const handleDelete = async (id: number) => {
